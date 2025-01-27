@@ -1,8 +1,7 @@
-import { User } from '../connections/database.js';
-import { Task } from '../connections/database.js';
+import { userModel as User } from "../models/user.js";
+import { taskModel as Task } from "../models/task.js";
 
-
-const handlerGetRegister = async (req, res) => {
+const handleGetRegister = async (req, res) => {
     const { email, password } = req.body;
     try{
         await User.create({ email, password});
@@ -12,7 +11,7 @@ const handlerGetRegister = async (req, res) => {
     }
 };
 
-const handlerGetLogin = async (req, res) => {
+const handleGetLogin = async (req, res) => {
     const { email, password } = req.body;
     try{
         const user = await User.findOne({ where: { email } });
@@ -25,18 +24,18 @@ const handlerGetLogin = async (req, res) => {
     }
 };
 
-const handlerAssignTask = (req,res) => {
-    const userId = req.params.userId;
-    const task = req.body;
+const handleAssignTask = async (req,res) => {
+    // const userId = req.params.userId;
+    const {userId, task} = req.body;
     try {
-        Task.create({userId, task});
+        await Task.create({userId, task});
         res.status(201).json({ message: 'Task Assigned Successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error in Assigning Task', error })
     }
 };
 
-const handlerGetAllUser = async (req, res) => {
+const handleGetAllUser = async (req, res) => {
     try {
         const users = await User.findAll();
         return res.status(200).json(users);
@@ -45,7 +44,7 @@ const handlerGetAllUser = async (req, res) => {
     }
 };
 
-const handlerGetAllTask = async (req, res) => {
+const handleGetAllTask = async (req, res) => {
     const userId = req.params.id;
     try {
         const Tasks = await Task.findAll({ where: { userId } });
@@ -60,9 +59,9 @@ const handlerGetAllTask = async (req, res) => {
 };
 
 export {
-    handlerGetLogin,
-    handlerGetRegister,
-    handlerAssignTask,
-    handlerGetAllTask,
-    handlerGetAllUser,
+    handleGetLogin,
+    handleGetRegister,
+    handleAssignTask,
+    handleGetAllTask,
+    handleGetAllUser,
 };

@@ -1,18 +1,19 @@
 import { Router } from 'express';
 
-import {handlerGetRegister,
-        handlerGetLogin,
-        handlerGetAllTask,
-        handlerGetAllUser,
-        handlerAssignTask,
+import {handleGetRegister,
+        handleGetLogin,
+        handleGetAllTask,
+        handleGetAllUser,
+        handleAssignTask,
     } from '../controllers/user.js';
 
-const userRouter = async () => {
-    userRouter.post('register', handlerGetRegister);
-    userRouter.post('login', handlerGetLogin);
-    userRouter.post('task/:userId', handlerAssignTask);
-    userRouter.get('users', handlerGetAllUser);
-    userRouter.get('task/:id', handlerGetAllTask);
-};
+const userRouter = Router();
+
+userRouter.post('/register', handleGetRegister);
+userRouter.post('/login', handleGetLogin);
+userRouter.post('/task', handleAssignTask);
+userRouter.get('/users', handleGetAllUser);
+userRouter.get('/task/:id', handleGetAllTask);
+
 
 export { userRouter };

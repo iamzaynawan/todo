@@ -1,15 +1,19 @@
 import express from 'express';
-import { databaseConnection } from './connections/database.js';
 import { userRouter } from './routes/user.js';
+import sequelize from './connections/database.js';
 
 const app = express();
 const PORT = 4320;
 
 app.use(express.json());
 
-databaseConnection();
+const connection = async ()  => {
+    await sequelize.sync({ force: false });
+};
 
-app.use('/', userRouter);
+connection();
+
+app.use('/user', userRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is started on port ${PORT}`);

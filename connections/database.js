@@ -1,27 +1,16 @@
+import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 
-import { userModel } from '../models/user.js';
-import { taskModel } from '../models/task.js';
+dotenv.config();
 
-const sequelize = new Sequelize('crud', 'postgres', 'fadec19B', {
-    host: 'localhost',
-    dialect: 'postgres',
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,      
+  process.env.DB_USER,      
+  process.env.DB_PASSWORD,  
+  {
+    host: process.env.DB_HOST,   
+    dialect: process.env.DB_DIALECT, 
+  }
+);
 
-let User = null;
-let Task = null;
-
-const databaseConnection = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-        await sequelize.sync({ force: false });
-        User = userModel;
-        Task = taskModel;
-        console.log("Database Synced");
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
-};
-
-export { User, Task, sequelize, databaseConnection };
+export default sequelize;
