@@ -1,4 +1,7 @@
-export const taskModel = sequelize.define('Task', {
+import { DataTypes } from "sequelize";
+import { sequelize } from '../connections/database.js';
+
+const taskModel = sequelize.define('Task', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -14,3 +17,5 @@ export const taskModel = sequelize.define('Task', {
 }, {
     tableName: 'Task',
 });
+
+export { taskModel };

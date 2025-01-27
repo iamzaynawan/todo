@@ -1,42 +1,8 @@
-import express from 'express';
-import { Sequelize, DataTypes } from 'sequelize';
-import { userModel } from './models/user.model';
-import { taskModel } from './models/task.model';
+import { User } from '../connections/database.js';
+import { Task } from '../connections/database.js';
 
 
-const app = express();
-const PORT = 4320;
-
-app.use(express.json());
-
-app.listen(PORT, () => {
-    console.log(`Server is started on port ${PORT}`);
-});
-
-const sequelize = new Sequelize('crud', 'postgres', 'fadec19B', {
-    host: 'localhost',
-    dialect: 'postgres',
-});
-
-let User = null;
-let Task = null;
-
-const connection = async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
-        await sequelize.sync({ force: false });
-        User = userModel;
-        Task = taskModel;
-        console.log("Database Synced");
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
-};
-
-connection();
-
-app.post('/register', async (req, res) => {
+const handlerGetRegister = async (req, res) => {
     const { email, password } = req.body;
     try{
         await User.create({ email, password});
@@ -44,9 +10,9 @@ app.post('/register', async (req, res) => {
     }catch (error) {
         res.status(500).json({ message: 'Error adding user', error });
     }
-});
+};
 
-app.post('/login', async (req, res) => {
+const handlerGetLogin = async (req, res) => {
     const { email, password } = req.body;
     try{
         const user = await User.findOne({ where: { email } });
@@ -57,9 +23,9 @@ app.post('/login', async (req, res) => {
     }catch (error) {
         res.status(500).json({ message: 'Error during login', error });
     }
-});
+};
 
-app.post('/task/:userId', (req,res) => {
+const handlerAssignTask = (req,res) => {
     const userId = req.params.userId;
     const task = req.body;
     try {
@@ -68,19 +34,18 @@ app.post('/task/:userId', (req,res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error in Assigning Task', error })
     }
-});
+};
 
-
-app.get('/users', async (req, res) => {
+const handlerGetAllUser = async (req, res) => {
     try {
         const users = await User.findAll();
         return res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching users', error });
     }
-});
+};
 
-app.get('/task/:id', async (req, res) => {
+const handlerGetAllTask = async (req, res) => {
     const userId = req.params.id;
     try {
         const Tasks = await Task.findAll({ where: { userId } });
@@ -92,4 +57,12 @@ app.get('/task/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error fetching Tasks', error });
     }
-});
+};
+
+export {
+    handlerGetLogin,
+    handlerGetRegister,
+    handlerAssignTask,
+    handlerGetAllTask,
+    handlerGetAllUser,
+};

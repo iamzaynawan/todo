@@ -1,4 +1,7 @@
-export const userModel = sequelize.define('User', {
+import { DataTypes } from "sequelize";
+import { sequelize } from '../connections/database.js';
+
+const userModel = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -18,3 +21,4 @@ export const userModel = sequelize.define('User', {
     timestamps: false,
 });
 
+export { userModel };
