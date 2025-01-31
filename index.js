@@ -6,14 +6,13 @@ const app = express();
 const PORT = 4320;
 
 app.use(express.json());
+app.use('/user', userRouter);
 
 const connection = async ()  => {
     await sequelize.sync({ force: false });
 };
 
 connection();
-
-app.use('/user', userRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is started on port ${PORT}`);

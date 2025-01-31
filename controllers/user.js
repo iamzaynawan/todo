@@ -1,11 +1,12 @@
 import { userModel as User } from "../models/user.js";
 import { taskModel as Task } from "../models/task.js";
+import { handleError500 } from "../utils/utils.js";
 
 const handleGetRegister = async (req, res) => {
     const { email, password } = req.body;
     try{
         await User.create({ email, password});
-        res.status(201).json({ message: 'User added successfully' });
+        res.status(201).json({ message: 'User registered successfully' });
     }catch (error) {
         res.status(500).json({ message: 'Error adding user', error });
     }
@@ -16,7 +17,7 @@ const handleGetLogin = async (req, res) => {
     try{
         const user = await User.findOne({ where: { email } });
         if (!user || password !== user.password) {
-            return res.status(500).json({ message: 'User Not Found' });
+            return res.status(401).json({ message: 'User Not Found' });
         }
         res.status(200).json({ message: 'Login successful', user });
     }catch (error) {
@@ -25,7 +26,6 @@ const handleGetLogin = async (req, res) => {
 };
 
 const handleAssignTask = async (req,res) => {
-    // const userId = req.params.userId;
     const {userId, task} = req.body;
     try {
         await Task.create({userId, task});
@@ -40,7 +40,7 @@ const handleGetAllUser = async (req, res) => {
         const users = await User.findAll();
         return res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error });
+        handleError500(res, error);
     }
 };
 
@@ -51,10 +51,10 @@ const handleGetAllTask = async (req, res) => {
         if(Tasks !== null){
             return res.status(200).json(Tasks);
         }else{
-            res.status(500).json('User has no tasks');
+            res.status(404).json({ message: 'No tasks found for this user' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching Tasks', error });
+        handleError500(res, error);
     }
 };
 
