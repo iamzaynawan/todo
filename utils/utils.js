@@ -1,7 +1,5 @@
-const handleError500 = (res, error) => {
-    res.status(500).json({ message: 'Error fetching users', error });
-};
+const sendResponse = (res, statusCode, message, data = null, error = null) => {
+    res.status(statusCode).json({ success, message, data, error });
+    };
 
-export{
-    handleError500
-};
+export{ sendResponse };
